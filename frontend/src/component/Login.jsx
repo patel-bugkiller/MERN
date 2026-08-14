@@ -3,6 +3,8 @@ import "../css/Login.css";
 import { useState } from "react";
 import axios from "axios";
 
+const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
+
 const Login = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState(""); 
@@ -11,7 +13,7 @@ const Login = ({ setIsLoggedIn }) => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/login", { 
+      const res = await axios.post(`${API_URL}/api/login`, { 
         email,
         password,
       });

@@ -3,21 +3,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../css/signup.css";
 
+const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
+
 const SignUp = ({ setIsLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
-  const handleLogin = () => {
-    // Perform login logic here (e.g., API call)
-    // If login is successful:
-    setUsername("");
-    setEmail("");
-    setPassword("");
-    setIsLoggedIn(true);
-    navigate("/");
-  }
 
   useEffect(() => {
     if (setIsLoggedIn) setIsLoggedIn(false);
@@ -26,7 +18,7 @@ const SignUp = ({ setIsLoggedIn }) => {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/signup", { 
+      const res = await axios.post(`${API_URL}/api/signup`, { 
         username,
         email,
         password,

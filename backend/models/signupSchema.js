@@ -2,17 +2,15 @@ const mongoose = require("mongoose");
 
 const signupSchema = new mongoose.Schema(
   {
-    username: { type: String, required: true, trim: true },
+    username: { type: String, required: true },
     email: {
       type: String,
       required: true,
       unique: true,
-      trim: true,
-      lowercase: true,
     },
     password: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: false }
 );
 
 const signup_schema = mongoose.model("User", signupSchema);

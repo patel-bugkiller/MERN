@@ -7,7 +7,12 @@ const User = require('./models/signupSchema'); // import your model
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
 // Connect to MongoDB
@@ -24,24 +29,23 @@ app.get('/', (req, res) => {
 app.post("/api/signup", async (req, res) => {
   try {
     const { username, email, password } = req.body;
-
+    console.log(req.body);
     if (!username || !email || !password) {
       return res.status(400).json({ error: "Username, email, and password are required" });
     }
 
-    const existingUser = await User.findOne({ email: String(email).trim().toLowerCase() });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ error: "An account with this email already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(String(password).trim(), 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    console.log("Signup attempt:", req.body);
-    console.log("Hashed password:", hashedPassword);
+    console.log("Signup attempt:", email);
 
     const newUser = new User({
-      username: String(username).trim(),
-      email: String(email).trim().toLowerCase(),
+      username,
+      email,
       password: hashedPassword,
     });
 
@@ -66,16 +70,15 @@ app.post("/api/signup", async (req, res) => {
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
     // ✅ Print every login attempt
-    console.log("Login attempt:", email, password);
+    console.log("Login attempt:", email);
 
     const exuser = await User.findOne({ email });
     const passwordMatch = exuser && await bcrypt.compare(password, exuser.password);
 
     if (passwordMatch) {
       // If user found
-      console.log("Login successful:", exuser.email, exuser.password);
+      console.log("Login successful:", exuser.email);
       res.json({
         isLoggedIn: true,
         message: "Login successful",
@@ -86,7 +89,7 @@ app.post("/api/login", async (req, res) => {
       });
     } else {
       // If not found
-      console.log("Invalid login attempt:", email, password);
+      console.log("Invalid login attempt:", email);
       res.status(401).json({
         isLoggedIn: false,
         message: "Invalid email or password",
@@ -103,8 +106,3 @@ app.post("/api/login", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-
-
-
-/* mongodb+srv://itsmepatel45_db_user:0K88G411nUOwWcej@webpage.wvnma6t.mongodb.net/paradox*/ 
