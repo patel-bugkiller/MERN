@@ -8,7 +8,7 @@ import Order from "./Order";
 import UseEffectsAPI from "./useEffectsAPI";
 import ProtectedRoute from "./ProtectedRoute";
 import Login from "./Login";
-import SignUp from "./SignUp";
+import SignUp from "./signUp";
 import { useState } from "react";
 import "../css/App.css"; 
 
